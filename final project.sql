@@ -96,7 +96,7 @@ WITH RepaidLoans AS (
     WHERE d.type = 'OWNER'
       AND l.status IN ('A', 'C')
 )
--- Number of loans
+
 SELECT
     gender,
     COUNT(*) AS number_of_repaid_loans,
@@ -183,7 +183,7 @@ ORDER BY account_balance DESC;
 
 # SELECTION PART 2
 
-# clients with more than 1000 in account balance
+# CLIENTS WITH MORE THAN 1000 IN ACCOUNT BALANCE 
 SELECT c.client_id, SUM(l.amount) - SUM(l.payments) AS account_balance
 FROM loan l
 JOIN account a ON l.account_id = a.account_id
@@ -192,7 +192,7 @@ JOIN client c ON d.client_id = c.client_id
 GROUP BY c.client_id
 HAVING SUM(l.amount) - SUM(l.payments) > 1000;
 
-# more than 5 loans
+# MORE THAN FIVE LOANS
 SELECT c.client_id, COUNT(l.loan_id) AS loan_count
 FROM loan l
 JOIN account a ON l.account_id = a.account_id
@@ -201,7 +201,7 @@ JOIN client c ON d.client_id = c.client_id
 GROUP BY c.client_id
 HAVING COUNT(l.loan_id) > 5;
 
-#clients born after 1990
+# CLIENTS BORN AFTER 1990
 SELECT c.client_id, c.birth_date
 FROM client c
 WHERE c.birth_date > '1990-01-01';
@@ -214,7 +214,7 @@ DELIMITER $$
 
 CREATE PROCEDURE refresh_cards_at_expiration()
 BEGIN
-    -- Create the cards_at_expiration table if it doesn't exist
+    
     CREATE TABLE IF NOT EXISTS financial3_95.cards_at_expiration (
         client_id INT NOT NULL,
         card_id INT NOT NULL,
@@ -222,16 +222,16 @@ BEGIN
         client_address VARCHAR(255) NOT NULL
     );
 
-    -- Clear any existing data in the cards_at_expiration table
+
     TRUNCATE TABLE financial3_95.cards_at_expiration;
 
-    -- Insert the expiring cards data
+
     INSERT INTO financial3_95.cards_at_expiration (client_id, card_id, expiration_date, client_address)
     SELECT
         c2.client_id,
         c.card_id,
         DATE_ADD(c.issued, INTERVAL 3 YEAR) AS expiration_date,
-        d2.address AS client_address  -- Assuming 'address' is the correct column
+        d2.address AS client_address 
     FROM
         financial3_95.card c
     INNER JOIN
